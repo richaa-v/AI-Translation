@@ -1,0 +1,5 @@
+Flask==2.3.3
+moviepy==1.0.3
+googletrans
+pydub
+SpeechRecognition
