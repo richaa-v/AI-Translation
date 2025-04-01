@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video Translation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin: 20px 0;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .output-section {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>AI Video Translation System</h1>
+    
+    <form id="translationForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="video">Upload Video:</label><br>
+            <input type="file" id="video" name="video" accept="video/*" required>
+        </div>
+
+        <div class="form-group">
+            <label for="voice">Upload Voice Sample:</label><br>
+            <input type="file" id="voice" name="voice" accept="audio/*" required>
+        </div>
+
+        <div class="form-group">
+            <label for="language">Select Target Language:</label><br>
+            <select id="language" name="language" required>
+                <option value="">Select Language</option>
+                <option value="swahili">Swahili</option>
+                <option value="yoruba">Yoruba</option>
+                <option value="hausa">Hausa</option>
+                <option value="zulu">Zulu</option>
+                <option value="amharic">Amharic</option>
+                <option value="en">en </option>
+            </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Generate Translation</button>
+    </form>
+
+    <div class="output-section">
+        <h2>Output Video</h2>
+        <div id="result">
+            <video id="outputVideo" controls style="display: none; max-width: 100%;">
+                Your browser does not support the video tag.
+            </video>
+            <p id="status"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('translationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('video', document.getElementById('video').files[0]);
+            formData.append('voice', document.getElementById('voice').files[0]);
+            formData.append('language', document.getElementById('language').value);
+
+            document.getElementById('status').textContent = 'Processing... Please wait.';
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/translate', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const videoUrl = URL.createObjectURL(blob);
+                    const videoElement = document.getElementById('outputVideo');
+                    videoElement.src = videoUrl;
+                    videoElement.style.display = 'block';
+                    document.getElementById('status').textContent = 'Translation completed!';
+                } else {
+                    document.getElementById('status').textContent = 'Error occurred during translation.';
+                }
+            } catch (error) {
+                document.getElementById('status').textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html></div></select>
